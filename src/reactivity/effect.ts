@@ -1,4 +1,6 @@
 import { extend } from "../shared";
+let activeEffect;
+let shouldTrack = false;
 
 class ReactiveEffect {
   active = true;
@@ -8,8 +10,33 @@ class ReactiveEffect {
     console.log("创建 ReactiveEffect 对象");
   }
   run() {
-    activeEffect = this;
-    return this.fn();
+    console.log("run");
+    // 运行 run 的时候，可以控制 要不要执行后续收集依赖的一步
+    // 目前来看的话，只要执行了 fn 那么就默认执行了收集依赖
+    // 这里就需要控制了
+
+    // 是不是收集依赖的变量
+
+    // 执行 fn  但是不收集依赖
+    if (!this.active) {
+      return this.fn();
+    }
+
+    // 执行 fn  收集依赖
+    // 可以开始收集依赖了
+    shouldTrack = true;
+
+    // 执行的时候给全局的 activeEffect 赋值
+    // 利用全局属性来获取当前的 effect
+    activeEffect = this as any;
+    // 执行用户传入的 fn
+    console.log("执行用户传入的 fn");
+    const result = this.fn();
+    // 重置
+    shouldTrack = false;
+    activeEffect = undefined;
+
+    return result;
   }
   stop() {
     if (this.active) {
@@ -17,7 +44,7 @@ class ReactiveEffect {
       // 这是为了防止重复的调用，执行 stop 逻辑
       cleanupEffect(this);
       if (this.onStop) {
-        this.onStop()
+        this.onStop();
       }
       this.active = false;
     }
@@ -36,7 +63,12 @@ function cleanupEffect(effect) {
 const targetMap = new Map();
 
 export function track(target, key) {
-  // target -> key -> dep
+  if (!isTracking()) {
+    return;
+  }
+  console.log(`触发 track -> target: ${target} key:${key}`);
+  // 1. 先基于 target 找到对应的 dep
+  // 如果是第一次的话，那么就需要初始化
   let depsMap = targetMap.get(target);
 
   if (!depsMap) {
@@ -53,8 +85,10 @@ export function track(target, key) {
 
   if (!activeEffect) return;
 
-  dep.add(activeEffect);
-  activeEffect.deps.push(dep);
+  if (!dep.has(activeEffect)) {
+    dep.add(activeEffect);
+    (activeEffect as any).deps.push(dep);
+  }
 }
 
 export function trigger(target, key) {
@@ -69,8 +103,9 @@ export function trigger(target, key) {
     }
   }
 }
-
-let activeEffect;
+export function isTracking() {
+  return shouldTrack && activeEffect !== undefined;
+}
 
 export function effect(fn, options = {}) {
   const _effect = new ReactiveEffect(fn);
