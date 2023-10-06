@@ -85,6 +85,11 @@ export function track(target, key) {
 
   if (!activeEffect) return;
 
+  trackEffects(dep);
+}
+
+export function trackEffects(dep) {
+  // 用 dep 来存放所有的 effect
   if (!dep.has(activeEffect)) {
     dep.add(activeEffect);
     (activeEffect as any).deps.push(dep);
@@ -95,14 +100,21 @@ export function trigger(target, key) {
   let depsMap = targetMap.get(target);
   let dep = depsMap.get(key);
 
+  triggerEffects(dep);
+}
+
+export function triggerEffects(dep) {
+  // 执行收集到的所有的 effect 的 run 方法
   for (const effect of dep) {
     if (effect.scheduler) {
+      // scheduler 可以让用户自己选择调用的时机
       effect.scheduler();
     } else {
       effect.run();
     }
   }
 }
+
 export function isTracking() {
   return shouldTrack && activeEffect !== undefined;
 }
