@@ -86,7 +86,6 @@ pnpm build
 #### 流程图
 ![初始化流程图](https://user-images.githubusercontent.com/12064746/138114565-3e0eecbb-7fd0-4203-bf36-5e5fd8003ce0.png)
 
-> 可加 vx：cuixr1314  获取所有脑图(备注：github mini-vue 领取脑图)
 #### 关键函数调用图
 
 
@@ -182,6 +181,3 @@ pnpm build
 课程内部包含了 vue3 的三大核心模块：reactivity、runtime 以及 compiler 模块
 
 等你自己手写一遍之后 在去看 vue3 源码或者再去看分析解析 vue3 源码的书籍时你会有不同的体验
-
-除此之外 还录制了课程介绍以及课程试听课
-- [课程介绍](https://www.bilibili.com/video/BV16Z4y1r7Wp)
