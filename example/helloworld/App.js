@@ -1,19 +1,32 @@
 import { h } from "../../lib/mini-vue.esm.js";
-window.self = null
+import { Foo } from "./Foo.js";
+window.self = null;
 export default {
   name: "App",
   // render函数
   render() {
-    window.self = this
+    window.self = this;
     // ui
     return h(
       "div",
       {
         id: "root",
         class: ["red", "hard"],
+        onClick() {
+          console.log("click");
+        },
+        onMousedown() {
+          console.log("mousedown");
+        },
       },
+      [
+        h("div", {}, "hi, " + this.msg),
+        h(Foo, {
+          count: 1,
+        }),
+      ]
       // this.$el
-      "hi, " + this.msg
+      // "hi, " + this.msg
       // string
       // "hi mini-vue"
       // array
