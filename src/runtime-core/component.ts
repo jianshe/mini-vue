@@ -8,6 +8,7 @@ export function createComponentInstance(vnode) {
     vnode,
     setupState: {},
     props: {},
+    emit: () => {}
   };
 
   return component;
