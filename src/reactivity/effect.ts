@@ -10,7 +10,6 @@ export class ReactiveEffect {
     console.log("创建 ReactiveEffect 对象");
   }
   run() {
-    console.log("run");
     // 运行 run 的时候，可以控制 要不要执行后续收集依赖的一步
     // 目前来看的话，只要执行了 fn 那么就默认执行了收集依赖
     // 这里就需要控制了
@@ -30,7 +29,7 @@ export class ReactiveEffect {
     // 利用全局属性来获取当前的 effect
     activeEffect = this as any;
     // 执行用户传入的 fn
-    console.log("执行用户传入的 fn");
+    // console.log("执行用户传入的 fn");
     const result = this.fn();
     // 重置
     shouldTrack = false;
@@ -99,20 +98,23 @@ export function trackEffects(dep) {
 export function trigger(target, key) {
   let depsMap = targetMap.get(target);
   let dep = depsMap.get(key);
-
   triggerEffects(dep);
 }
 
 export function triggerEffects(dep) {
   // 执行收集到的所有的 effect 的 run 方法
-  for (const effect of dep) {
+  dep.forEach((effect) => {
     if (effect.scheduler) {
       // scheduler 可以让用户自己选择调用的时机
       effect.scheduler();
     } else {
       effect.run();
     }
-  }
+  });
+
+  // for (const effect of dep) {
+
+  // }
 }
 
 export function isTracking() {

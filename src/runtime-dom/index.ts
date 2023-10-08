@@ -4,7 +4,6 @@
 import { createRenderer } from "../runtime-core";
 // 后面也修改成和源码一样的实现
 function createElement(type) {
-  console.log("createElement", type);
   return document.createElement(type);
 }
 
@@ -19,7 +18,6 @@ function patchProp(el, key, val) {
 }
 
 function insert(el, parent) {
-  console.log("Insert");
   parent.append(el);
 }
 
