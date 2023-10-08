@@ -1,6 +1,6 @@
 // 老的是 array
 // 新的是 array
-import {ref, h } from "../../lib/mini-vue.esm.js";
+import { ref, h } from "../../lib/mini-vue.esm.js";
 
 // 1. 左侧的对比
 // (a b) c
@@ -43,7 +43,6 @@ import {ref, h } from "../../lib/mini-vue.esm.js";
 //   h("p", { key: "A" }, "A"),
 //   h("p", { key: "B" }, "B"),
 //   h("p", { key: "C" }, "C"),
-//   h("p", { key: "D" }, "D"),
 // ];
 
 // 右侧
@@ -63,12 +62,12 @@ import {ref, h } from "../../lib/mini-vue.esm.js";
 // (a b) c
 // (a b)
 // i = 2, e1 = 2, e2 = 1
-// const prevChildren = [
-//   h("p", { key: "A" }, "A"),
-//   h("p", { key: "B" }, "B"),
-//   h("p", { key: "C" }, "C"),
-// ];
-// const nextChildren = [h("p", { key: "A" }, "A"), h("p", { key: "B" }, "B")];
+const prevChildren = [
+  h("p", { key: "A" }, "A"),
+  h("p", { key: "B" }, "B"),
+  h("p", { key: "C" }, "C"),
+];
+const nextChildren = [h("p", { key: "A" }, "A"), h("p", { key: "B" }, "B")];
 
 // 右侧
 // a (b c)
@@ -208,19 +207,19 @@ import {ref, h } from "../../lib/mini-vue.esm.js";
 // ];
 
 // fix c 节点应该是 move 而不是删除之后重新创建的
-const prevChildren = [
-  h("p", { key: "A" }, "A"),
-  h("p", {}, "C"),
-  h("p", { key: "B" }, "B"),
-  h("p", { key: "D" }, "D"),
-];
+// const prevChildren = [
+//   h("p", { key: "A" }, "A"),
+//   h("p", {}, "C"),
+//   h("p", { key: "B" }, "B"),
+//   h("p", { key: "D" }, "D"),
+// ];
 
-const nextChildren = [
-  h("p", { key: "A" }, "A"),
-  h("p", { key: "B" }, "B"),
-  h("p", {}, "C"),
-  h("p", { key: "D" }, "D"),
-];
+// const nextChildren = [
+//   h("p", { key: "A" }, "A"),
+//   h("p", { key: "B" }, "B"),
+//   h("p", {}, "C"),
+//   h("p", { key: "D" }, "D"),
+// ];
 
 export default {
   name: "ArrayToArray",

@@ -21,20 +21,21 @@ function patchProp(el, key, prevVal, nextVal) {
   }
 }
 
-function insert(el, parent) {
-  parent.append(el);
+function insert(child, parent, anchor) {
+  // parent.append(child);
+  // 把元素指定添加到对应哪个元素之前,如果anchor为null和上面是一样的。
+  parent.insertBefore(child, anchor || null);
 }
 
-function remove (child) {
+function remove(child) {
   const parent = child.parentNode;
-  if(parent) {
+  if (parent) {
     parent.removeChild(child);
   }
 }
 
-
-function setElementText(el,text) {
-  el.textContent = text
+function setElementText(el, text) {
+  el.textContent = text;
 }
 
 const renderer: any = createRenderer({
@@ -42,7 +43,7 @@ const renderer: any = createRenderer({
   patchProp,
   insert,
   remove,
-  setElementText
+  setElementText,
 });
 
 export function createApp(...args) {
