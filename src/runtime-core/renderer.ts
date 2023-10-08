@@ -164,8 +164,50 @@ export function createRenderer(options) {
         hostRemove(c1[i].el);
         i++;
       }
+    } else {
+      // 中间对比，先建立一个映射表
+      // 1. 先遍历
+      let s1 = i;
+      let s2 = i;
+
+      const toBePatched = e2 - s2 + 1;
+      let patched = 0;
+      const keyToNewIndexMap = new Map();
+
+      for (let i = s2; i <= e2; i++) {
+        const nextChild = c2[i];
+        keyToNewIndexMap.set(nextChild.key, i);
+      }
+      // 遍历新的数组
+      for (let i = s1; i <= e1; i++) {
+        const prevChild = c1[i];
+
+        if (patched >= toBePatched) {
+          hostRemove(prevChild.el);
+          continue;
+        }
+
+        // null undefined
+        let newIndex;
+        if (prevChild.key !== null) {
+          newIndex = keyToNewIndexMap.get(prevChild.key);
+        } else {
+          for (let j = s2; j < e2; j++) {
+            if (isSomeVNodeType(prevChild, c2[j])) {
+              newIndex = j;
+              break;
+            }
+          }
+        }
+        // 如果存在通过patch递归进行对比，如果在新的里面不存在，把旧的节点删除。
+        if (newIndex === undefined) {
+          hostRemove(prevChild.el);
+        } else {
+          patch(prevChild, c2[newIndex], container, parentComponent, null);
+          patched++;
+        }
+      }
     }
-    console.log("i", i);
   }
 
   function unmountChildren(children) {
