@@ -1,9 +1,17 @@
-import { h } from "../../lib/mini-vue.esm.js";
+import { h, renderSlots } from "../../lib/mini-vue.esm.js";
 
-export const Foo = {
-  setup(props) {},
+export default {
+  name: "Foo",
+  setup(props, context) {},
   render() {
-    const foo = h("p", {}, "foo");
-    return h("div", {}, [foo, this.$slots]);
+    return h("div", { "data-test": "foo" }, [
+      h("div", {}, "foo"),
+      // renderSlots 会返回一个 vnode
+      // 其本质和 h 是一样的
+      // 第三个参数给出数据
+      renderSlots(this.$slots, "default", {
+        age: 16,
+      }),
+    ]);
   },
 };

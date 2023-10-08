@@ -4,6 +4,8 @@ import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandlers } from "./componentPublicInstance";
 import { initSlots } from "./componentSlots";
 
+let currentInstance = null;
+
 export function createComponentInstance(vnode) {
   const component = {
     type: vnode.type,
@@ -11,17 +13,17 @@ export function createComponentInstance(vnode) {
     setupState: {},
     props: {},
     slots: {},
-    emit: () => {}
+    emit: () => {},
   };
 
-  component.emit = emit.bind(null,component) as any;
+  component.emit = emit.bind(null, component) as any;
 
   return component;
 }
 
 export function setupComponent(instance) {
   initProps(instance, instance.vnode.props);
-  initSlots(instance, instance.vnode.children) // 把虚拟节点的children赋值给Slots
+  initSlots(instance, instance.vnode.children); // 把虚拟节点的children赋值给Slots
 
   setupStatefulComponent(instance);
 }
@@ -34,10 +36,12 @@ function setupStatefulComponent(instance: any) {
 
   const { setup } = Component;
   if (setup) {
+    setCurrentInstance(instance);
     // function Object
-    const setupResult = setup(shallowReadonly(instance.props),{
-      emit: instance.emit
+    const setupResult = setup(shallowReadonly(instance.props), {
+      emit: instance.emit,
     });
+    setCurrentInstance(null);
     handleSetupResult(instance, setupResult);
   }
 }
@@ -55,4 +59,12 @@ function finishComponentSetup(instance: any) {
   if (Component.render) {
     instance.render = Component.render;
   }
+}
+
+export function getCurrentInstance() {
+  return currentInstance;
+}
+
+export function setCurrentInstance(instance) {
+  currentInstance = instance;
 }
