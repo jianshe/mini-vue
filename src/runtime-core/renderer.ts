@@ -20,7 +20,6 @@ export function createRenderer(options) {
   }
   // n1 代表的是之前的虚拟节点;n2代表的是新的。
   function patch(n1, n2, container, parentComponent, anchor) {
-    console.log("anchor", anchor);
     // 判断Vnode是不是一个element
     // 是element 那么 就应该处理element
     // 如何判断是element类型还是component类型
@@ -139,7 +138,7 @@ export function createRenderer(options) {
     while (i <= e1 && i <= e2) {
       const n1 = c1[e1];
       const n2 = c2[e2];
-      if (isSomeVNodeType(n2, n2)) {
+      if (isSomeVNodeType(n1, n2)) {
         patch(n1, n2, container, parentComponent, parentAnchor);
       } else {
         break;
@@ -173,6 +172,13 @@ export function createRenderer(options) {
       const toBePatched = e2 - s2 + 1;
       let patched = 0;
       const keyToNewIndexMap = new Map();
+      const newIndexToOldIndexMap = new Array(toBePatched);
+      let moved = false;
+      let maxNexIndexSoFar = 0;
+      // 初始化映射表
+      for (let i = 0; i < toBePatched; i++) {
+        newIndexToOldIndexMap[i] = 0; //  代表还没有建议映射关系
+      }
 
       for (let i = s2; i <= e2; i++) {
         const nextChild = c2[i];
@@ -203,8 +209,42 @@ export function createRenderer(options) {
         if (newIndex === undefined) {
           hostRemove(prevChild.el);
         } else {
+          // 代表新节点在老节点里面存在
+
+          if (newIndex >= maxNexIndexSoFar) {
+            maxNexIndexSoFar = newIndex;
+          } else {
+            moved = true;
+          }
+
+          newIndexToOldIndexMap[newIndex - s2] = i + 1;
+
           patch(prevChild, c2[newIndex], container, parentComponent, null);
           patched++;
+        }
+      }
+
+      // 生成最长递增子序列
+      const increasingNewIndexSequence = moved
+        ? getSequence(newIndexToOldIndexMap)
+        : [];
+
+      let j = increasingNewIndexSequence.length - 1;
+      for (let i = toBePatched - 1; i >= 0; i--) {
+        const nextIndex = i + s2;
+        const nextChild = c2[nextIndex];
+        const anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : null;
+
+        if (newIndexToOldIndexMap[i] === 0) {
+          // 需要创建
+          patch(null, nextChild, container, parentComponent, anchor);
+        } else if (moved) {
+          if (j < 0 || i !== increasingNewIndexSequence[j]) {
+            console.log("移动位置");
+            hostInsert(nextChild.el, container, anchor);
+          } else {
+            j--;
+          }
         }
       }
     }
@@ -338,4 +378,45 @@ export function createRenderer(options) {
   return {
     createApp: createAppApi(render),
   };
+}
+
+function getSequence(arr: number[]): number[] {
+  const p = arr.slice();
+  const result = [0];
+  let i, j, u, v, c;
+  const len = arr.length;
+  for (i = 0; i < len; i++) {
+    const arrI = arr[i];
+    if (arrI !== 0) {
+      j = result[result.length - 1];
+      if (arr[j] < arrI) {
+        p[i] = j;
+        result.push(i);
+        continue;
+      }
+      u = 0;
+      v = result.length - 1;
+      while (u < v) {
+        c = (u + v) >> 1;
+        if (arr[result[c]] < arrI) {
+          u = c + 1;
+        } else {
+          v = c;
+        }
+      }
+      if (arrI < arr[result[u]]) {
+        if (u > 0) {
+          p[i] = result[u - 1];
+        }
+        result[u] = i;
+      }
+    }
+  }
+  u = result.length;
+  v = result[u - 1];
+  while (u-- > 0) {
+    result[u] = v;
+    v = p[v];
+  }
+  return result;
 }
