@@ -7,6 +7,13 @@ export function transform(root, options = {}) {
   // 1. 遍历 - 深度优先搜索
   traverseNode(root, context);
   // 2. 修改 text - content
+
+  // root.codegencode
+  createRootCodegen(root);
+}
+
+function createRootCodegen(root: any) {
+  root.codegenNode = root.children[0];
 }
 
 function createTransformContext(root: any, options: any): any {
@@ -19,7 +26,7 @@ function createTransformContext(root: any, options: any): any {
 
 function traverseNode(node: any, context: any) {
   if (node.type === NodeTypes.TEXT) {
-    node.content = node.content + " mini-vue";
+    node.content = node.content;
   }
 
   // 取出我们的nodeTransforms

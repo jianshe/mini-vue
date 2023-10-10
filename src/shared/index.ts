@@ -45,3 +45,5 @@ export const hyphenate = (str: string) =>
   str.replace(hyphenateRE, "-$1").toLowerCase();
 
 export const EMPTY_OBJ = {};
+
+export const isString = (val) => typeof val === "string";
