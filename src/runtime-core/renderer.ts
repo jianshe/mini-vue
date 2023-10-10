@@ -374,43 +374,49 @@ export function createRenderer(options) {
     container,
     anchor
   ) {
-    instance.update = effect(() => {
-      if (!instance.isMounted) {
-        console.log("init");
-        const { proxy } = instance;
-        const subTree = (instance.subTree = instance.render.call(proxy));
-        // vnode -> patch
-        // vnode -> element
-        patch(null, subTree, container, instance, anchor);
+    instance.update = effect(
+      () => {
+        if (!instance.isMounted) {
+          console.log("init");
+          const { proxy } = instance;
+          const subTree = (instance.subTree = instance.render.call(
+            proxy,
+            proxy
+          ));
+          // vnode -> patch
+          // vnode -> element
+          patch(null, subTree, container, instance, anchor);
 
-        initialVNode.el = subTree.el;
+          initialVNode.el = subTree.el;
 
-        instance.isMounted = true;
-      } else {
-        // update
-        // 更新完组件的props
-        // 需要一个新的虚拟节点
-        const { next, vnode } = instance;
+          instance.isMounted = true;
+        } else {
+          // update
+          // 更新完组件的props
+          // 需要一个新的虚拟节点
+          const { next, vnode } = instance;
 
-        if (next) {
-          next.el = vnode.el;
+          if (next) {
+            next.el = vnode.el;
 
-          updateComponentPreRender(instance, next);
+            updateComponentPreRender(instance, next);
+          }
+
+          const { proxy } = instance;
+          const subTree = instance.render.call(proxy, proxy);
+          const prevSubTree = instance.subTree;
+          instance.subTree = subTree;
+
+          patch(prevSubTree, subTree, container, instance, anchor);
         }
-
-        const { proxy } = instance;
-        const subTree = instance.render.call(proxy);
-        const prevSubTree = instance.subTree;
-        instance.subTree = subTree;
-
-        patch(prevSubTree, subTree, container, instance, anchor);
+      },
+      {
+        scheduler() {
+          console.log("update - scheduler");
+          queueJobs(instance.update);
+        },
       }
-    },{
-      scheduler() {
-        console.log("update - scheduler");
-        queueJobs(instance.update);
-      }
-    });
+    );
   }
 
   return {
