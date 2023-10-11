@@ -8,7 +8,7 @@ export default defineConfig({
     alias: [
       {
         // @guide-mini-vue/runtime-core/src
-        find: /@guide-mini-vue\/(\w*)/,
+        find: /@guide-mini-vue\/([\w-]*)/,
         replacement: path.resolve(__dirname, "packages") + "/$1/src",
       },
     ],

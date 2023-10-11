@@ -1,6 +1,5 @@
 import { ElementTypes, NodeTypes } from "../src/ast";
 import { baseParse } from "../src/parse";
-import { describe,test,expect } from "vitest";
 
 describe("parser", () => {
   describe("text", () => {

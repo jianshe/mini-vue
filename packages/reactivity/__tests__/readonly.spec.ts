@@ -1,5 +1,4 @@
 import { isProxy, isReactive, isReadonly, readonly } from "../src/reactive";
-import { describe,it,expect} from "vitest";
 
 describe("readonly", () => {
   it("should make nested values readonly", () => {

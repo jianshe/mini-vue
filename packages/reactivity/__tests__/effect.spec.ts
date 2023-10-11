@@ -1,6 +1,5 @@
 import { effect, stop } from "../src/effect";
 import { reactive } from "../src/reactive";
-import { describe,it,expect,vi} from "vitest";
 
 describe("effct", () => {
   it("happy path", () => {
