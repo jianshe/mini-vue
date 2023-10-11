@@ -623,6 +623,7 @@ function createAppApi(render) {
 }
 
 const queque = [];
+const activePreFlushCbs = [];
 let isFlushPending = false;
 const p = Promise.resolve();
 function queueJobs(job) {
@@ -643,8 +644,16 @@ function queueFlush() {
 function flushJobs() {
     isFlushPending = false;
     let job;
+    //
+    flushPreFlushCbs();
+    // component render
     while ((job = queque.shift())) {
         job && job();
+    }
+}
+function flushPreFlushCbs() {
+    for (let i = 0; i < activePreFlushCbs.length; i++) {
+        activePreFlushCbs[i]();
     }
 }
 
@@ -1112,7 +1121,8 @@ var runtimeDom = /*#__PURE__*/Object.freeze({
   isReadonly: isReadonly,
   isProxy: isProxy,
   effect: effect,
-  stop: stop
+  stop: stop,
+  ReactiveEffect: ReactiveEffect
 });
 
 const TO_DISPLAY_STRING = Symbol(`toDisplayString`);
@@ -1619,5 +1629,5 @@ function compileToFunction(template) {
 }
 registerRuntimeCompiler(compileToFunction);
 
-export { createApp, createVNode as createElementVNode, createRenderer, createTextVNode, effect, getCurrentInstance, h, inject, isProxy, isReactive, isReadonly, isRef, nextTick, provide, proxyRefs, reactive, readonly, ref, registerRuntimeCompiler, renderSlots, shallowReadonly, stop, toDisplayString, unRef };
+export { ReactiveEffect, createApp, createVNode as createElementVNode, createRenderer, createTextVNode, effect, getCurrentInstance, h, inject, isProxy, isReactive, isReadonly, isRef, nextTick, provide, proxyRefs, reactive, readonly, ref, registerRuntimeCompiler, renderSlots, shallowReadonly, stop, toDisplayString, unRef };
 //# sourceMappingURL=guide-mini-vue.ejs.js.map

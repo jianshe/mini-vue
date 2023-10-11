@@ -627,6 +627,7 @@ function createAppApi(render) {
 }
 
 const queque = [];
+const activePreFlushCbs = [];
 let isFlushPending = false;
 const p = Promise.resolve();
 function queueJobs(job) {
@@ -647,8 +648,16 @@ function queueFlush() {
 function flushJobs() {
     isFlushPending = false;
     let job;
+    //
+    flushPreFlushCbs();
+    // component render
     while ((job = queque.shift())) {
         job && job();
+    }
+}
+function flushPreFlushCbs() {
+    for (let i = 0; i < activePreFlushCbs.length; i++) {
+        activePreFlushCbs[i]();
     }
 }
 
@@ -1116,7 +1125,8 @@ var runtimeDom = /*#__PURE__*/Object.freeze({
   isReadonly: isReadonly,
   isProxy: isProxy,
   effect: effect,
-  stop: stop
+  stop: stop,
+  ReactiveEffect: ReactiveEffect
 });
 
 const TO_DISPLAY_STRING = Symbol(`toDisplayString`);
@@ -1623,6 +1633,7 @@ function compileToFunction(template) {
 }
 registerRuntimeCompiler(compileToFunction);
 
+exports.ReactiveEffect = ReactiveEffect;
 exports.createApp = createApp;
 exports.createElementVNode = createVNode;
 exports.createRenderer = createRenderer;
