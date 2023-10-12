@@ -1,5 +1,3 @@
-[CN](README.md) / [EN](README_EN.md)
-
 实现最简 vue3 模型，用于深入学习 vue3， 让你更轻松的理解 vue3 的核心逻辑
 
 ## Usage
@@ -80,33 +78,6 @@ pnpm build
 通过 server 的方式打开 packages/vue/example/\* 下的 index.html 即可
 
 >  推荐使用 [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
-
-### 初始化
-
-#### 流程图
-![初始化流程图](https://user-images.githubusercontent.com/12064746/138114565-3e0eecbb-7fd0-4203-bf36-5e5fd8003ce0.png)
-
-#### 关键函数调用图
-
-
-![关键函数调用图2](https://images-1252602850.cos.ap-beijing.myqcloud.com/20220927170658.png)
-
-> 可以基于函数名快速搜索到源码内容
-
-### update
-
-#### 流程图
-
-![image](https://user-images.githubusercontent.com/12064746/138115157-1f4fb8a2-7e60-412d-96de-12e68eb0288c.png)
-
-#### 关键函数调用图
-
-![image](https://user-images.githubusercontent.com/12064746/138114969-9139e4af-b2df-41b2-a5d9-069d8b41903c.png)
-
-
-> 可以基于函数名快速搜索到源码内容
-
-
 
 ### 从零到一实现一遍
 
