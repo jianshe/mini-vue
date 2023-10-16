@@ -1125,6 +1125,97 @@ var runtimeDom = /*#__PURE__*/Object.freeze({
   ReactiveEffect: ReactiveEffect
 });
 
+var Compare;
+(function (Compare) {
+    Compare[Compare["LESS_THAN"] = -1] = "LESS_THAN";
+    Compare[Compare["BIGGER_THAN"] = 1] = "BIGGER_THAN";
+    Compare[Compare["EQUALS"] = 0] = "EQUALS";
+})(Compare || (Compare = {}));
+function defaultCompare(a, b) {
+    if (a === b) {
+        return Compare.EQUALS;
+    }
+    return a < b ? Compare.LESS_THAN : Compare.BIGGER_THAN;
+}
+function swap(array, a, b) {
+    /* const temp = array[a];
+    array[a] = array[b];
+    array[b] = temp; */
+    [array[a], array[b]] = [array[b], array[a]];
+}
+
+function findMaxValue(array, compareFn = defaultCompare) {
+    if (array && array.length > 0) {
+        let max = array[0];
+        for (let i = 1; i < array.length; i++) {
+            if (compareFn(max, array[i]) === Compare.LESS_THAN) {
+                max = array[i];
+            }
+        }
+        return max;
+    }
+    return undefined;
+}
+
+function countingSort(array) {
+    if (array.length < 2) {
+        return array;
+    }
+    const maxValue = findMaxValue(array);
+    let sortedIndex = 0;
+    const counts = new Array(maxValue + 1);
+    array.forEach((element) => {
+        if (!counts[element]) {
+            counts[element] = 0;
+        }
+        counts[element]++;
+    });
+    console.log('Frequencies: ' + counts.join());
+    counts.forEach((element, i) => {
+        while (element > 0) {
+            array[sortedIndex++] = i;
+            element--;
+        }
+    });
+    return array;
+}
+
+function quick(array, left, right, comparedFn = defaultCompare) {
+    let index;
+    if (array.length > 1) {
+        index = partial(array, left, right, comparedFn);
+        if (left < index - 1) {
+            quick(array, left, index - 1, comparedFn);
+        }
+        if (right > index) {
+            quick(array, index, right, comparedFn);
+        }
+    }
+    return array;
+}
+function partial(array, left, right, compareFn) {
+    let pivot = array[Math.floor((left + right) / 2)];
+    let i = left;
+    let j = right;
+    while (i <= j) {
+        while (compareFn(array[i], pivot) === Compare.LESS_THAN) {
+            i++;
+        }
+        while (compareFn(array[j], pivot) === Compare.BIGGER_THAN) {
+            j--;
+        }
+        if (i <= j) {
+            swap(array, i, j);
+            i++;
+            j--;
+        }
+    }
+    return i;
+}
+function quickSort(array, comparedFn = defaultCompare) {
+    return quick(array, 0, array.length - 1, comparedFn);
+}
+
 const TO_DISPLAY_STRING = Symbol(`toDisplayString`);
 const CREATE_ELEMENT_VNODE = Symbol("createElementVNode");
 const helperNameMap = {
@@ -1629,5 +1720,5 @@ function compileToFunction(template) {
 }
 registerRuntimeCompiler(compileToFunction);
 
-export { ReactiveEffect, createApp, createVNode as createElementVNode, createRenderer, createTextVNode, effect, getCurrentInstance, h, inject, isProxy, isReactive, isReadonly, isRef, nextTick, provide, proxyRefs, reactive, readonly, ref, registerRuntimeCompiler, renderSlots, shallowReadonly, stop, toDisplayString, unRef };
+export { ReactiveEffect, countingSort, createApp, createVNode as createElementVNode, createRenderer, createTextVNode, effect, getCurrentInstance, h, inject, isProxy, isReactive, isReadonly, isRef, nextTick, provide, proxyRefs, quickSort, reactive, readonly, ref, registerRuntimeCompiler, renderSlots, shallowReadonly, stop, toDisplayString, unRef };
 //# sourceMappingURL=guide-mini-vue.ejs.js.map

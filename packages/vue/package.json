@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@guide-mini-vue/algorithms": "workspace:^",
     "@guide-mini-vue/compiler-core": "workspace:^",
     "@guide-mini-vue/runtime-dom": "workspace:^"
   }

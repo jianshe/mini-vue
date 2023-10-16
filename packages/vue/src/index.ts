@@ -1,5 +1,7 @@
 // mini-vue 出口
 export * from "@guide-mini-vue/runtime-dom";
+export * from "@guide-mini-vue/algorithms";
+
 import { baseCompile } from "@guide-mini-vue/compiler-core";
 import * as runtimeDom from "@guide-mini-vue/runtime-dom";
 import { registerRuntimeCompiler } from "@guide-mini-vue/runtime-dom";

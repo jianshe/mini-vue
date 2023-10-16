@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`counting sort > happy path 1`] = `
+[
+  6,
+  8,
+  9,
+  10,
+  22,
+  23,
+  98,
+]
+`;

@@ -33,6 +33,8 @@ importers:
         specifier: ^0.34.6
         version: registry.npmmirror.com/vitest@0.34.6
 
+  packages/algorithms: {}
+
   packages/compiler-core:
     dependencies:
       '@guide-mini-vue/shared':
@@ -64,6 +66,9 @@ importers:
 
   packages/vue:
     dependencies:
+      '@guide-mini-vue/algorithms':
+        specifier: workspace:^
+        version: link:../algorithms
       '@guide-mini-vue/compiler-core':
         specifier: workspace:^
         version: link:../compiler-core
